@@ -1,0 +1,440 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    /* Titanium Light Grey Theme (Soft Matte Grey & Fire Orange - Zero Glare) */
+    --bg-primary: #D6DBE4;
+    --bg-elevated: #E2E7F0;
+    --bg-secondary: #CBD3DF;
+    --bg-surface-accent: rgba(234, 88, 12, 0.12);
+    --bg-hover: #D0D8E4;
+    --border-subtle: #BAC5D4;
+    --border-focus: #EA580C;
+    --text-primary: #0F172A;
+    --text-secondary: #2E3A4B;
+    --text-muted: #526074;
+    --accent-orange: #EA580C;
+    --accent-orange-hover: #C2410C;
+    --accent-fire: #F97316;
+    --color-success: #059669;
+    --color-warning: #D97706;
+    --color-danger: #DC2626;
+    --shadow-card: 0 1px 3px 0 rgba(15, 23, 42, 0.08), 0 1px 2px -1px rgba(15, 23, 42, 0.08);
+    --shadow-card-hover: 0 4px 8px -1px rgba(15, 23, 42, 0.12);
+    --shadow-dropdown: 0 10px 20px -3px rgba(15, 23, 42, 0.15);
+  }
+
+  .dark {
+    /* Primary Executive Dark Theme: Deep Charcoal Grey & Fire Orange */
+    color-scheme: dark;
+    --bg-primary: #0E1015;
+    --bg-elevated: #161922;
+    --bg-secondary: #1C202B;
+    --bg-surface-accent: rgba(234, 88, 12, 0.14);
+    --bg-hover: #222735;
+    --border-subtle: #262C38;
+    --border-focus: #F97316;
+    --text-primary: #F3F4F6;
+    --text-secondary: #9CA3AF;
+    --text-muted: #6B7280;
+    --accent-orange: #EA580C;
+    --accent-orange-hover: #F97316;
+    --accent-fire: #FF6D2E;
+    --color-success: #10B981;
+    --color-warning: #F59E0B;
+    --color-danger: #EF4444;
+    --shadow-card: 0 8px 24px 0 rgba(0, 0, 0, 0.5);
+    --shadow-card-hover: 0 12px 36px 0 rgba(0, 0, 0, 0.65);
+    --shadow-dropdown: 0 24px 48px -8px rgba(0, 0, 0, 0.8);
+  }
+
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    overflow-x: hidden;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+}
+
+/* ========================================================= */
+/* UNIVERSAL FIRE ORANGE REPLACEMENTS (Both Light & Dark)    */
+/* ========================================================= */
+
+/* Fire Orange Primary Buttons & Badges (Replacing 155EEF Blue) */
+.bg-\[\#155EEF\],
+[class*="bg-[#155EEF]"] {
+  background: linear-gradient(135deg, #EA580C 0%, #F97316 100%) !important;
+  color: #FFFFFF !important;
+}
+
+.border-\[\#155EEF\],
+[class*="border-[#155EEF]"] {
+  border-color: #EA580C !important;
+}
+
+.ring-\[\#155EEF\],
+[class*="ring-[#155EEF]"] {
+  --tw-ring-color: #EA580C !important;
+}
+
+.hover\:bg-\[\#104EC6\]:hover,
+[class*="hover:bg-[#104EC6]"]:hover {
+  background: #C2410C !important;
+}
+
+[class*="hover:border-[#155EEF]"]:hover {
+  border-color: #EA580C !important;
+}
+
+input[type="range"] {
+  accent-color: #EA580C !important;
+}
+
+/* ========================================================= */
+/* ========================================================= */
+/* TITANIUM LIGHT GREY THEME (Active when html is not .dark)  */
+/* ========================================================= */
+
+html:not(.dark) body {
+  background-color: #D6DBE4 !important;
+  color: #0F172A !important;
+}
+
+html:not(.dark) aside {
+  background-color: rgba(226, 231, 239, 0.96) !important;
+  border-color: #BAC5D4 !important;
+}
+
+html:not(.dark) header {
+  background-color: rgba(226, 231, 239, 0.94) !important;
+  border-color: #BAC5D4 !important;
+}
+
+/* Light Grey Cards & Containers (Soft Slate Surfaces, Zero White Glare) */
+html:not(.dark) .bg-white,
+html:not(.dark) [class*="bg-white/"] {
+  background-color: #E2E7F0 !important;
+  border-color: #BAC5D4 !important;
+}
+
+html:not(.dark) .bg-\[\#F8FAFC\],
+html:not(.dark) [class*="bg-[#F8FAFC]"],
+html:not(.dark) .bg-slate-50,
+html:not(.dark) .bg-gray-50 {
+  background-color: #D3DAE5 !important;
+}
+
+html:not(.dark) .bg-\[\#F1F5F9\],
+html:not(.dark) [class*="bg-[#F1F5F9]"] {
+  background-color: #C8D1DE !important;
+}
+
+/* Fire Orange Soft Tints in Light Grey Mode */
+html:not(.dark) .bg-\[\#EEF4FF\],
+html:not(.dark) [class*="bg-[#EEF4FF]"] {
+  background-color: rgba(234, 88, 12, 0.12) !important;
+}
+
+html:not(.dark) [class*="hover:bg-[#EEF4FF]"]:hover,
+html:not(.dark) [class*="hover:bg-[#E0EAFF]"]:hover {
+  background-color: rgba(234, 88, 12, 0.18) !important;
+}
+
+/* Borders in Light Grey Mode - Strong definition so all cards are clearly seen */
+html:not(.dark) .border-\[\#DFE7F3\],
+html:not(.dark) [class*="border-[#DFE7F3]"],
+html:not(.dark) .border-slate-200,
+html:not(.dark) .border-gray-200 {
+  border-color: #BAC5D4 !important;
+}
+
+html:not(.dark) .divide-\[\#DFE7F3\] > :not([hidden]) ~ :not([hidden]) {
+  border-color: #BAC5D4 !important;
+}
+
+/* Typography in Light Grey Mode - Crisp Graphite Navy with Excellent Contrast */
+html:not(.dark) .text-\[\#102A56\],
+html:not(.dark) [class*="text-[#102A56]"] {
+  color: #0F172A !important;
+}
+
+html:not(.dark) .text-\[\#64748B\],
+html:not(.dark) [class*="text-[#64748B]"] {
+  color: #2E3A4B !important;
+}
+
+html:not(.dark) .text-\[\#94A3B8\],
+html:not(.dark) [class*="text-[#94A3B8]"] {
+  color: #526074 !important;
+}
+
+html:not(.dark) .text-\[\#155EEF\],
+html:not(.dark) [class*="text-[#155EEF]"] {
+  color: #EA580C !important;
+}
+
+html:not(.dark) [class*="hover:bg-[#F8FAFC]"]:hover {
+  background-color: #CBD3DF !important;
+}
+
+/* Form Inputs in Light Grey Mode */
+html:not(.dark) input[type="text"],
+html:not(.dark) input[type="time"],
+html:not(.dark) input[type="date"],
+html:not(.dark) input[type="number"],
+html:not(.dark) input[type="password"],
+html:not(.dark) input[type="url"],
+html:not(.dark) textarea,
+html:not(.dark) select {
+  background-color: #D6DCE6 !important;
+  color: #0F172A !important;
+  border-color: #B4C0D2 !important;
+}
+
+html:not(.dark) input:focus,
+html:not(.dark) textarea:focus,
+html:not(.dark) select:focus {
+  border-color: #EA580C !important;
+  outline: none;
+  box-shadow: 0 0 0 1px #EA580C, 0 0 8px rgba(234, 88, 12, 0.25) !important;
+}
+
+html:not(.dark) .page-bg-overlay {
+  background: radial-gradient(circle at center, rgba(214, 219, 228, 0.35) 0%, rgba(214, 219, 228, 0.82) 65%, #D6DBE4 100%) !important;
+}
+
+/* ========================================================= */
+/* DARK THEME (Active when html has .dark)                   */
+/* ========================================================= */
+
+.dark body {
+  background-color: #0E1015 !important;
+  color: #F3F4F6 !important;
+}
+
+/* Sidebars & App Headers */
+.dark aside {
+  background-color: rgba(18, 21, 28, 0.94) !important;
+  border-color: #262C38 !important;
+}
+
+.dark header {
+  background-color: rgba(18, 21, 28, 0.92) !important;
+  border-color: #262C38 !important;
+}
+
+/* Cards & Surface Containers with Translucent Glass Look */
+.dark .bg-white,
+.dark [class*="bg-white/"] {
+  background-color: rgba(22, 26, 35, 0.84) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Secondary Panels & Grays */
+.dark .bg-\[\#F8FAFC\],
+.dark [class*="bg-[#F8FAFC]"],
+.dark .bg-\[\#F7F9FC\],
+.dark [class*="bg-[#F7F9FC]"],
+.dark .bg-\[\#F1F5F9\],
+.dark [class*="bg-[#F1F5F9]"],
+.dark .bg-slate-50,
+.dark .bg-gray-50 {
+  background-color: #191D27 !important;
+}
+
+/* Fire Orange Tinted Surfaces in Dark Mode */
+.dark .bg-\[\#EEF4FF\],
+.dark [class*="bg-[#EEF4FF]"] {
+  background-color: rgba(234, 88, 12, 0.14) !important;
+}
+
+/* Borders in Neutral Charcoal Grey */
+.dark .border-\[\#DFE7F3\],
+.dark [class*="border-[#DFE7F3]"],
+.dark .border-\[\#F1F5F9\],
+.dark [class*="border-[#F1F5F9]"],
+.dark .border-slate-200,
+.dark .border-gray-200 {
+  border-color: #272D3A !important;
+}
+
+.dark .divide-\[\#DFE7F3\] > :not([hidden]) ~ :not([hidden]) {
+  border-color: #272D3A !important;
+}
+
+/* Typography Hierarchy in Dark Mode */
+.dark .text-\[\#102A56\],
+.dark [class*="text-[#102A56]"],
+.dark .text-slate-900,
+.dark .text-gray-900 {
+  color: #F3F4F6 !important;
+}
+
+.dark .text-\[\#64748B\],
+.dark [class*="text-[#64748B]"],
+.dark .text-slate-600,
+.dark .text-gray-600 {
+  color: #9CA3AF !important;
+}
+
+.dark .text-\[\#94A3B8\],
+.dark [class*="text-[#94A3B8]"],
+.dark .text-slate-400,
+.dark .text-gray-400 {
+  color: #6B7280 !important;
+}
+
+.dark .text-\[\#155EEF\],
+.dark [class*="text-[#155EEF]"] {
+  color: #F97316 !important;
+}
+
+/* Hover States in Dark Mode */
+.dark [class*="hover:bg-[#F8FAFC]"]:hover,
+.dark .hover\:bg-slate-50:hover,
+.dark .hover\:bg-slate-100:hover,
+.dark .hover\:bg-slate-200\/60:hover {
+  background-color: #212634 !important;
+}
+
+.dark [class*="hover:bg-[#EEF4FF]"]:hover,
+.dark [class*="hover:bg-[#E0EAFF]"]:hover {
+  background-color: rgba(234, 88, 12, 0.22) !important;
+}
+
+.dark [class*="hover:text-[#102A56]"]:hover {
+  color: #FFFFFF !important;
+}
+
+/* Form Controls in Dark Mode */
+.dark input[type="text"],
+.dark input[type="time"],
+.dark input[type="date"],
+.dark input[type="number"],
+.dark input[type="password"],
+.dark input[type="url"],
+.dark textarea,
+.dark select {
+  background-color: #151821 !important;
+  color: #F3F4F6 !important;
+  border-color: #282E3C !important;
+}
+
+.dark input.bg-transparent,
+.dark select.bg-transparent {
+  background-color: transparent !important;
+}
+
+.dark option {
+  background-color: #161922 !important;
+  color: #F3F4F6 !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #6B7280 !important;
+}
+
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  border-color: #EA580C !important;
+  outline: none;
+  box-shadow: 0 0 0 1px #EA580C, 0 0 10px rgba(234, 88, 12, 0.25) !important;
+}
+
+/* Modals & Shadows in Dark Mode */
+.dark .shadow-2xl,
+.dark .shadow-xl {
+  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.75), 0 0 0 1px #282E3C !important;
+}
+
+.dark .shadow-xs,
+.dark .shadow-sm,
+.dark .shadow-md {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), 0 0 0 1px #262C38 !important;
+}
+
+/* Status Badges */
+.bg-blue-50 {
+  background-color: rgba(234, 88, 12, 0.12) !important;
+}
+.text-blue-700,
+.text-blue-600 {
+  color: #EA580C !important;
+}
+.border-blue-200 {
+  border-color: rgba(234, 88, 12, 0.25) !important;
+}
+
+.dark .bg-blue-50 {
+  background-color: rgba(234, 88, 12, 0.16) !important;
+}
+.dark .text-blue-700,
+.dark .text-blue-600 {
+  color: #FB923C !important;
+}
+.dark .border-blue-200 {
+  border-color: rgba(234, 88, 12, 0.35) !important;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.35);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(234, 88, 12, 0.5);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.25);
+}
+
+/* Atmospheric Page Background Artwork Container */
+.page-bg-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .page-bg-canvas {
+    left: 16rem; /* 64 (w-64 sidebar) */
+  }
+}
+
+.page-bg-image {
+  position: absolute;
+  inset: -10px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: background-image 0.5s ease-in-out, opacity 0.4s ease-in-out;
+  will-change: transform, opacity;
+}
+
+.page-bg-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: background 0.3s ease;
+}
+
+.dark .page-bg-overlay {
+  background: radial-gradient(circle at center, rgba(14, 16, 21, 0.45) 0%, rgba(14, 16, 21, 0.85) 65%, #0E1015 100%) !important;
+}

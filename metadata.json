@@ -1,0 +1,6 @@
+{
+  "name": "DayFlow AI",
+  "description": "An intelligent personal operating system and AI chief of staff for organizing time, priorities, focus, and life balance.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
