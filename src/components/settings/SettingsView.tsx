@@ -127,12 +127,9 @@ export function SettingsView({
     input.click();
   };
 
-  const handleResetToDemo = () => {
-    if (window.confirm('Reset all tasks, commitments, and settings to the default state?')) {
-      StorageService.resetToDemo();
-      showToast('Reset Complete', 'Reloading default workspace...', 'info');
-      setTimeout(() => window.location.reload(), 800);
-    }
+  const handleClearAllData = () => {
+    StorageService.clearAllData();
+    showToast('Clean Slate Active', 'All tasks, commitments, goals, and history cleared.', 'success');
   };
 
   const handleTestN8n = async () => {
@@ -750,11 +747,11 @@ export function SettingsView({
 
             <button
               type="button"
-              onClick={handleResetToDemo}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-xs font-semibold text-rose-700 ml-auto cursor-pointer shadow-xs"
+              onClick={handleClearAllData}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl border border-rose-200 dark:border-rose-900/50 bg-rose-50 dark:bg-rose-950/30 hover:bg-rose-100 dark:hover:bg-rose-900/40 text-xs font-semibold text-rose-700 dark:text-rose-400 ml-auto cursor-pointer shadow-xs"
             >
               <RotateCcw className="w-4 h-4" />
-              <span>Reset to AI Specialist Demo</span>
+              <span>Clear All Data (Clean Slate)</span>
             </button>
           </div>
         </div>

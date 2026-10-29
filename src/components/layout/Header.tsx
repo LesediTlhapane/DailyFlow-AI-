@@ -8,9 +8,12 @@ import {
   Clock,
   CheckCircle2,
   AlertTriangle,
+  User as UserIcon,
+  LogIn,
 } from 'lucide-react';
 import { UserSettings, FocusSession } from '../../types';
 import { NOTIFICATION_RESTRICTION_NOTE } from '../../utils/notifications';
+import { useAuth } from '../../context/AuthContext';
 import dayflowLogo from '../../assets/dayflow.jpg';
 
 interface HeaderProps {
@@ -19,6 +22,7 @@ interface HeaderProps {
   onOpenWhatNow: () => void;
   onOpenQuickAdd: () => void;
   onOpenFocusModal: () => void;
+  onOpenProfileModal: () => void;
   activeFocusSession: FocusSession | null;
   focusSecondsRemaining: number | null;
   unreadCount?: number;
@@ -30,9 +34,11 @@ export function Header({
   onOpenWhatNow,
   onOpenQuickAdd,
   onOpenFocusModal,
+  onOpenProfileModal,
   activeFocusSession,
   focusSecondsRemaining,
 }: HeaderProps) {
+  const { currentUser, userProfile, openAuthModal } = useAuth();
   const [currentTime, setCurrentTime] = useState<Date>(new Date());
   const [showNotifications, setShowNotifications] = useState(false);
 
@@ -71,6 +77,10 @@ export function Header({
     const s = seconds % 60;
     return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
   };
+
+  const userInitials = (userProfile?.displayName || currentUser?.email || 'User')
+    .slice(0, 2)
+    .toUpperCase();
 
   return (
     <header className="sticky top-0 z-30 flex items-center justify-between px-4 lg:px-8 py-3 border-b border-[#E2E8F0] dark:border-[#262c37] bg-white/95 dark:bg-[#12151c]/90 backdrop-blur-md transition-colors">
@@ -199,6 +209,38 @@ export function Header({
             <Moon className="w-4 h-4 text-orange-600" />
           )}
         </button>
+
+        {/* User Account / Profile Button */}
+        {currentUser ? (
+          <button
+            onClick={onOpenProfileModal}
+            className="flex items-center gap-2 p-1 pl-1.5 pr-2 rounded-xl border border-zinc-200 dark:border-[#2b313d] bg-white dark:bg-[#171a22] hover:bg-orange-500/5 dark:hover:bg-[#202531] text-zinc-800 dark:text-zinc-200 transition-all cursor-pointer shadow-xs group"
+            title="Account & Memory Profile"
+          >
+            {currentUser.photoURL ? (
+              <img
+                src={currentUser.photoURL}
+                alt="Profile"
+                className="w-6 h-6 rounded-lg object-cover ring-1 ring-orange-500/40"
+              />
+            ) : (
+              <div className="w-6 h-6 rounded-lg bg-orange-500/20 text-orange-600 dark:text-orange-400 flex items-center justify-center font-bold text-[10px] ring-1 ring-orange-500/30">
+                {userInitials}
+              </div>
+            )}
+            <span className="text-xs font-semibold max-w-[100px] truncate hidden sm:inline">
+              {userProfile?.displayName || currentUser.email?.split('@')[0]}
+            </span>
+          </button>
+        ) : (
+          <button
+            onClick={openAuthModal}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold border border-orange-500/40 bg-orange-500/10 hover:bg-orange-500/20 text-orange-600 dark:text-orange-400 transition-all cursor-pointer shadow-xs"
+          >
+            <LogIn className="w-3.5 h-3.5" />
+            <span>Sign In</span>
+          </button>
+        )}
       </div>
     </header>
   );

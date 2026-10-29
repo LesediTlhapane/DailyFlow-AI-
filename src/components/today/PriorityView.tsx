@@ -47,6 +47,19 @@ export function PriorityView({
 
   const getCat = (catId: string) => categories.find((c) => c.id === catId);
 
+  if (tasks.length === 0) {
+    return (
+      <div className="text-center py-12 border border-dashed border-[#DFE7F3] dark:border-[#262C38] rounded-2xl bg-white dark:bg-[#161922] p-6 space-y-2">
+        <div className="text-xs font-bold text-[#102A56] dark:text-zinc-200">
+          No tasks prioritized for today yet
+        </div>
+        <p className="text-[11px] text-[#64748B] dark:text-zinc-400">
+          Add a task using the Quick Add bar above to see it organized by priority tier.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {tiers.map((tier) => {

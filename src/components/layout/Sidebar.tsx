@@ -8,8 +8,10 @@ import {
   BarChart3,
   Settings,
   Hourglass,
+  LogIn,
 } from 'lucide-react';
 import { UserSettings } from '../../types';
+import { useAuth } from '../../context/AuthContext';
 import dayflowLogo from '../../assets/dayflow.jpg';
 
 export type NavSection =
@@ -29,6 +31,7 @@ interface SidebarProps {
   waitingCount: number;
   activeGoalsCount: number;
   settings?: UserSettings;
+  onOpenProfileModal?: () => void;
 }
 
 export function Sidebar({
@@ -38,7 +41,9 @@ export function Sidebar({
   waitingCount,
   activeGoalsCount,
   settings,
+  onOpenProfileModal,
 }: SidebarProps) {
+  const { currentUser, userProfile, openAuthModal } = useAuth();
   const navItems = [
     {
       id: 'today' as NavSection,
@@ -87,6 +92,10 @@ export function Sidebar({
       icon: Settings,
     },
   ];
+
+  const userInitials = (userProfile?.displayName || currentUser?.email || settings?.name || 'DF')
+    .slice(0, 2)
+    .toUpperCase();
 
   return (
     <aside className="hidden md:flex flex-col w-64 shrink-0 border-r border-[#E2E8F0] dark:border-[#262c37] bg-white/95 dark:bg-[#12151c]/90 backdrop-blur-md min-h-screen transition-colors z-20">
@@ -155,27 +164,50 @@ export function Sidebar({
       </nav>
 
       {/* User Operating Identity Footer */}
-      <div
-        onClick={() => onSelectSection('settings')}
-        className="p-3 border-t border-[#E2E8F0] dark:border-[#262c37] m-2 rounded-xl bg-zinc-50 dark:bg-[#171a22] hover:bg-orange-500/5 dark:hover:bg-[#1e232e] border border-zinc-200/80 dark:border-zinc-800/60 transition-all cursor-pointer group"
-        title="Account & Operating Preferences"
-      >
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-full bg-orange-500/10 dark:bg-orange-500/20 border border-orange-500/30 text-orange-600 dark:text-orange-300 flex items-center justify-center font-bold text-xs shrink-0 group-hover:border-orange-500/50 transition-colors">
-            {settings?.name?.slice(0, 2).toUpperCase() || 'LS'}
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 group-hover:text-orange-600 dark:group-hover:text-orange-300 transition-colors truncate">
-              {settings?.name || 'Lesedi'}
+      {currentUser ? (
+        <div
+          onClick={() => onOpenProfileModal ? onOpenProfileModal() : onSelectSection('settings')}
+          className="p-3 border-t border-[#E2E8F0] dark:border-[#262c37] m-2 rounded-xl bg-zinc-50 dark:bg-[#171a22] hover:bg-orange-500/5 dark:hover:bg-[#1e232e] border border-zinc-200/80 dark:border-zinc-800/60 transition-all cursor-pointer group"
+          title="Account Profile & Cloud Memory"
+        >
+          <div className="flex items-center gap-2.5">
+            {currentUser.photoURL ? (
+              <img
+                src={currentUser.photoURL}
+                alt="Profile"
+                className="w-8 h-8 rounded-full object-cover ring-1 ring-orange-500/40 shrink-0"
+              />
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-orange-500/10 dark:bg-orange-500/20 border border-orange-500/30 text-orange-600 dark:text-orange-300 flex items-center justify-center font-bold text-xs shrink-0 group-hover:border-orange-500/50 transition-colors">
+                {userInitials}
+              </div>
+            )}
+            <div className="min-w-0 flex-1">
+              <div className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 group-hover:text-orange-600 dark:group-hover:text-orange-300 transition-colors truncate">
+                {userProfile?.displayName || currentUser.email?.split('@')[0]}
+              </div>
+              <div className="text-[10px] text-zinc-500 dark:text-zinc-400 truncate flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span>Cloud Memory Sync</span>
+              </div>
             </div>
-            <div className="text-[10px] text-zinc-500 dark:text-zinc-400 truncate flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              Operating System
-            </div>
+            <Settings className="w-3.5 h-3.5 text-zinc-400 group-hover:text-orange-500 transition-colors" />
           </div>
-          <Settings className="w-3.5 h-3.5 text-zinc-400 group-hover:text-orange-500 transition-colors" />
         </div>
-      </div>
+      ) : (
+        <div className="p-3 border-t border-[#E2E8F0] dark:border-[#262c37] m-2">
+          <button
+            onClick={openAuthModal}
+            className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl border border-orange-500/40 bg-gradient-to-r from-orange-500/15 to-amber-500/15 hover:from-orange-500/25 hover:to-amber-500/25 text-orange-600 dark:text-orange-400 text-xs font-semibold transition-all cursor-pointer shadow-xs active:scale-98"
+          >
+            <LogIn className="w-3.5 h-3.5" />
+            <span>Sign In / Sign Up</span>
+          </button>
+          <div className="text-[10px] text-zinc-400 dark:text-zinc-500 text-center mt-1.5">
+            Save your tasks & AI memory
+          </div>
+        </div>
+      )}
     </aside>
   );
 }

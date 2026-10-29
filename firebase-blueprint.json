@@ -1,0 +1,113 @@
+{
+  "entities": {
+    "users": {
+      "title": "User Profile",
+      "description": "User profile and personal preferences",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "lastLoginAt": { "type": "string" },
+        "preferences": { "type": "object" }
+      },
+      "required": ["userId", "email"]
+    },
+    "tasks": {
+      "title": "Task",
+      "description": "User tasks with scheduling and priority",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "date": { "type": "string" },
+        "priority": { "type": "string" },
+        "energy": { "type": "string" },
+        "estimatedMinutes": { "type": "number" },
+        "completed": { "type": "boolean" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId", "title"]
+    },
+    "commitments": {
+      "title": "Commitment",
+      "description": "Schedule events and meetings",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "startTime": { "type": "string" },
+        "endTime": { "type": "string" },
+        "category": { "type": "string" },
+        "date": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["userId", "title", "startTime", "endTime"]
+    },
+    "goals": {
+      "title": "Goal",
+      "description": "User long-term and quarterly goals",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "progress": { "type": "number" },
+        "targetDate": { "type": "string" },
+        "why": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["userId", "title"]
+    },
+    "backlog": {
+      "title": "Backlog Item",
+      "description": "Tasks in backlog waiting to be scheduled",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "priority": { "type": "string" },
+        "estimatedMinutes": { "type": "number" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["userId", "title"]
+    },
+    "waiting": {
+      "title": "Waiting Item",
+      "description": "Items waiting on other people",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "forWhom": { "type": "string" },
+        "what": { "type": "string" },
+        "followUpDate": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["userId", "forWhom", "what"]
+    },
+    "chatMemory": {
+      "title": "AI Companion Memory",
+      "description": "Personalized AI conversation history and memory",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "messages": { "type": "array" },
+        "memorySummary": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId"]
+    }
+  }
+}

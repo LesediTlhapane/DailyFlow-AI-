@@ -14,6 +14,10 @@ import {
 import { StorageService } from './utils/storage';
 import { getSmartRecommendation } from './utils/scoring';
 import { ToastProvider, useToast } from './components/common/Toast';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { FirestoreSyncService } from './services/firestoreSync';
+import { AuthModal } from './components/auth/AuthModal';
+import { UserProfileModal } from './components/auth/UserProfileModal';
 import { Header } from './components/layout/Header';
 import { Sidebar, NavSection } from './components/layout/Sidebar';
 import { MobileNav } from './components/layout/MobileNav';
@@ -33,6 +37,7 @@ import { PAGE_BACKGROUNDS } from './utils/pageBackgrounds';
 
 function DayFlowApp() {
   const { showToast } = useToast();
+  const { currentUser, userProfile, openAuthModal } = useAuth();
 
   // Primary State
   const [currentSection, setCurrentSection] = useState<NavSection>('today');
@@ -58,6 +63,7 @@ function DayFlowApp() {
   const [showFocusModal, setShowFocusModal] = useState<boolean>(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [showTaskModal, setShowTaskModal] = useState<boolean>(false);
+  const [showProfileModal, setShowProfileModal] = useState<boolean>(false);
 
   // Energy preference for recommendations
   const [currentEnergy, setCurrentEnergy] = useState<'high' | 'medium' | 'low'>('medium');
@@ -77,6 +83,9 @@ function DayFlowApp() {
   const handleUpdateSettings = (newSettings: UserSettings) => {
     setSettings(newSettings);
     StorageService.saveSettings(newSettings);
+    if (currentUser?.uid) {
+      FirestoreSyncService.saveUserSettings(currentUser.uid, newSettings);
+    }
     if (newSettings.theme === 'dark') {
       document.documentElement.classList.add('dark');
       document.body.classList.add('dark');
@@ -100,6 +109,110 @@ function DayFlowApp() {
     setFocusSessions(StorageService.getFocusSessions());
     setReflections(StorageService.getReflections());
   }, []);
+
+  // Sync with Firestore whenever user logs in or out
+  useEffect(() => {
+    let isCancelled = false;
+    async function syncUserCloudPartition() {
+      if (!currentUser?.uid) {
+        // User logged out or guest: keep local data
+        return;
+      }
+
+      try {
+        const [
+          cloudTasks,
+          cloudCommitments,
+          cloudGoals,
+          cloudWaiting,
+          cloudBacklog,
+          cloudFocus,
+          cloudSettings,
+        ] = await Promise.all([
+          FirestoreSyncService.loadTasks(currentUser.uid),
+          FirestoreSyncService.loadCommitments(currentUser.uid),
+          FirestoreSyncService.loadGoals(currentUser.uid),
+          FirestoreSyncService.loadWaiting(currentUser.uid),
+          FirestoreSyncService.loadBacklog(currentUser.uid),
+          FirestoreSyncService.loadFocusSessions(currentUser.uid),
+          FirestoreSyncService.loadUserSettings(currentUser.uid),
+        ]);
+
+        if (isCancelled) return;
+
+        // Populate user's cloud tasks or initialize
+        if (cloudTasks && cloudTasks.length > 0) {
+          setTasks(cloudTasks);
+          StorageService.saveTasks(cloudTasks);
+        } else {
+          setTasks([]);
+          StorageService.saveTasks([]);
+        }
+
+        if (cloudCommitments && cloudCommitments.length > 0) {
+          setCommitments(cloudCommitments);
+          StorageService.saveCommitments(cloudCommitments);
+        } else {
+          setCommitments([]);
+          StorageService.saveCommitments([]);
+        }
+
+        if (cloudGoals && cloudGoals.length > 0) {
+          setGoals(cloudGoals);
+          StorageService.saveGoals(cloudGoals);
+        } else {
+          setGoals([]);
+          StorageService.saveGoals([]);
+        }
+
+        if (cloudWaiting && cloudWaiting.length > 0) {
+          setWaitingItems(cloudWaiting);
+          StorageService.saveWaiting(cloudWaiting);
+        } else {
+          setWaitingItems([]);
+          StorageService.saveWaiting([]);
+        }
+
+        if (cloudBacklog && cloudBacklog.length > 0) {
+          setBacklogItems(cloudBacklog);
+          StorageService.saveBacklog(cloudBacklog);
+        } else {
+          setBacklogItems([]);
+          StorageService.saveBacklog([]);
+        }
+
+        if (cloudFocus && cloudFocus.length > 0) {
+          setFocusSessions(cloudFocus);
+          StorageService.saveFocusSessions(cloudFocus);
+        }
+
+        if (cloudSettings) {
+          setSettings((prev) => ({
+            ...prev,
+            ...cloudSettings,
+            name: userProfile?.displayName || prev.name,
+            roleContext: userProfile?.roleContext || prev.roleContext,
+          }));
+        } else if (userProfile?.displayName) {
+          setSettings((prev) => ({
+            ...prev,
+            name: userProfile.displayName,
+            roleContext: userProfile.roleContext || prev.roleContext,
+          }));
+        }
+
+        showToast('Memory Synced', `Connected to ${userProfile?.displayName || 'your'} profile.`, 'success');
+      } catch (e: any) {
+        console.error('Cloud synchronization notice:', e);
+      }
+    }
+
+    syncUserCloudPartition();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [currentUser?.uid, userProfile?.displayName]);
 
   // Sync listener across tabs/events
   useEffect(() => {
@@ -180,7 +293,7 @@ function DayFlowApp() {
     setFocusSecondsRemaining(mins * 60);
   };
 
-  // Task save handler
+  // Task save handler with Cloud persistence
   const handleSaveTask = (savedTask: Task) => {
     let updatedTasks: Task[];
     const exists = tasks.some((t) => t.id === savedTask.id);
@@ -191,6 +304,11 @@ function DayFlowApp() {
     }
     setTasks(updatedTasks);
     StorageService.saveTasks(updatedTasks);
+
+    if (currentUser?.uid) {
+      FirestoreSyncService.saveTask(currentUser.uid, savedTask);
+    }
+
     showToast(exists ? 'Task Updated' : 'Task Created', `"${savedTask.title}" saved.`, 'success');
   };
 
@@ -198,6 +316,11 @@ function DayFlowApp() {
     const updated = tasks.filter((t) => t.id !== taskId);
     setTasks(updated);
     StorageService.saveTasks(updated);
+
+    if (currentUser?.uid) {
+      FirestoreSyncService.deleteTask(taskId);
+    }
+
     showToast('Task Deleted', 'Removed from registry.', 'info');
   };
 
@@ -214,6 +337,11 @@ function DayFlowApp() {
     const updated = [dup, ...tasks];
     setTasks(updated);
     StorageService.saveTasks(updated);
+
+    if (currentUser?.uid) {
+      FirestoreSyncService.saveTask(currentUser.uid, dup);
+    }
+
     showToast('Task Duplicated', `Created copy: "${dup.title}".`, 'success');
   };
 
@@ -227,6 +355,11 @@ function DayFlowApp() {
     const updated = tasks.map((t) => (t.id === task.id ? updatedTask : t));
     setTasks(updated);
     StorageService.saveTasks(updated);
+
+    if (currentUser?.uid) {
+      FirestoreSyncService.saveTask(currentUser.uid, updatedTask);
+    }
+
     showToast(
       isDone ? 'Marked Incomplete' : 'Task Completed!',
       `"${task.title}" updated.`,
@@ -254,12 +387,23 @@ function DayFlowApp() {
     const updated = [...created, ...tasks];
     setTasks(updated);
     StorageService.saveTasks(updated);
+
+    if (currentUser?.uid) {
+      for (const t of created) {
+        FirestoreSyncService.saveTask(currentUser.uid, t);
+      }
+    }
   };
 
   const handleAddCommitment = (c: CalendarCommitment) => {
     const updated = [...commitments, c];
     setCommitments(updated);
     StorageService.saveCommitments(updated);
+
+    if (currentUser?.uid) {
+      FirestoreSyncService.saveCommitment(currentUser.uid, c);
+    }
+
     showToast('Event Created', `"${c.title}" added to calendar.`, 'success');
   };
 
@@ -267,6 +411,10 @@ function DayFlowApp() {
     const updatedSessions = [session, ...focusSessions];
     setFocusSessions(updatedSessions);
     StorageService.saveFocusSessions(updatedSessions);
+
+    if (currentUser?.uid) {
+      FirestoreSyncService.saveFocusSession(currentUser.uid, session);
+    }
 
     if (updatedTask) {
       handleSaveTask(updatedTask);
@@ -294,6 +442,10 @@ function DayFlowApp() {
     setBacklogItems(updatedBacklog);
     StorageService.saveBacklog(updatedBacklog);
 
+    if (currentUser?.uid) {
+      FirestoreSyncService.saveBacklog(currentUser.uid, updatedBacklog);
+    }
+
     handleSaveTask(newTask);
     showToast('Promoted to Schedule', `"${newTask.title}" added to Today's tasks.`, 'success');
   };
@@ -316,6 +468,7 @@ function DayFlowApp() {
         waitingCount={waitingCount}
         activeGoalsCount={activeGoalsCount}
         settings={settings}
+        onOpenProfileModal={() => setShowProfileModal(true)}
       />
 
       {/* Main View Area */}
@@ -350,6 +503,7 @@ function DayFlowApp() {
             setShowTaskModal(true);
           }}
           onOpenFocusModal={() => setShowFocusModal(true)}
+          onOpenProfileModal={() => setShowProfileModal(true)}
           activeFocusSession={isFocusTimerActive ? activeFocusSessionData : null}
           focusSecondsRemaining={focusSecondsRemaining}
         />
@@ -437,10 +591,16 @@ function DayFlowApp() {
               onSaveWaiting={(items) => {
                 setWaitingItems(items);
                 StorageService.saveWaiting(items);
+                if (currentUser?.uid) {
+                  FirestoreSyncService.saveWaiting(currentUser.uid, items);
+                }
               }}
               onSaveBacklog={(items) => {
                 setBacklogItems(items);
                 StorageService.saveBacklog(items);
+                if (currentUser?.uid) {
+                  FirestoreSyncService.saveBacklog(currentUser.uid, items);
+                }
               }}
               onPromoteToTask={handlePromoteBacklogToTask}
             />
@@ -464,6 +624,9 @@ function DayFlowApp() {
               onSaveGoals={(g) => {
                 setGoals(g);
                 StorageService.saveGoals(g);
+                if (currentUser?.uid) {
+                  FirestoreSyncService.saveGoals(currentUser.uid, g);
+                }
               }}
               onAddTasks={handleAddMultipleTasks}
             />
@@ -531,6 +694,11 @@ function DayFlowApp() {
         onApplySchedule={(rebalancedTasks) => {
           setTasks(rebalancedTasks);
           StorageService.saveTasks(rebalancedTasks);
+          if (currentUser?.uid) {
+            for (const t of rebalancedTasks) {
+              FirestoreSyncService.saveTask(currentUser.uid, t);
+            }
+          }
         }}
       />
 
@@ -565,6 +733,15 @@ function DayFlowApp() {
         onDelete={handleDeleteTask}
         onDuplicate={handleDuplicateTask}
       />
+
+      {/* Authentication Modal */}
+      <AuthModal />
+
+      {/* User Profile Modal */}
+      <UserProfileModal
+        isOpen={showProfileModal}
+        onClose={() => setShowProfileModal(false)}
+      />
     </div>
   );
 }
@@ -572,7 +749,9 @@ function DayFlowApp() {
 export default function App() {
   return (
     <ToastProvider>
-      <DayFlowApp />
+      <AuthProvider>
+        <DayFlowApp />
+      </AuthProvider>
     </ToastProvider>
   );
 }

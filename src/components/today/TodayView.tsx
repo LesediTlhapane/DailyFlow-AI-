@@ -457,8 +457,17 @@ export function TodayView({
               </button>
             </div>
           ) : (
-            <div className="text-center py-6 text-xs text-[#64748B]">
-              All scheduled tasks completed. Great job!
+            <div className="text-center py-6 text-xs text-[#64748B] dark:text-zinc-400 space-y-1.5">
+              <div className="font-semibold text-[#102A56] dark:text-zinc-200">
+                {todayTasks.length === 0
+                  ? 'No tasks queued for today yet'
+                  : 'All scheduled tasks completed. Great job!'}
+              </div>
+              <p className="text-[11px] text-[#64748B] dark:text-zinc-400">
+                {todayTasks.length === 0
+                  ? 'Add your first task above or ask AI Chief of Staff to structure your day.'
+                  : 'Take a break or review your goals for tomorrow.'}
+              </p>
             </div>
           )}
         </div>
