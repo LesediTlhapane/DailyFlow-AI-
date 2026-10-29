@@ -1,12 +1,11 @@
+
 {
-  "projectId": "earnest-epsilon-1w1rw",
-  "appId": "1:371607081595:web:b09dc0cdf5e0cc2b1d88de",
-  "apiKey": "AIzaSyAAOR1Knl790c-YuzCF9oEkFkz2kgmingY",
-  "authDomain": "earnest-epsilon-1w1rw.firebaseapp.com",
-  "firestoreDatabaseId": "ai-studio-dayflowai-ffdff803-6076-4772-b2d9-f7a5504f02d6",
-  "storageBucket": "earnest-epsilon-1w1rw.firebasestorage.app",
-  "messagingSenderId": "371607081595",
-  "measurementId": "",
-  "oAuthClientId": "371607081595-4nfi7gae30q10lltbfmpa99l8lvk4h14.apps.googleusercontent.com",
-  "recaptchaSiteKey": ""
+  "projectId": "dailyflow-a2d83",
+  "appId": "1:956368538113:web:5843635ddeac6ecdf64e00",
+  "apiKey": "AIzaSyBwScCUxO3cQcWmU7MXb71d1vRU5tBARtc",
+  "authDomain": "dailyflow-a2d83.firebaseapp.com",
+  "firestoreDatabaseId": "(default)",
+  "storageBucket": "dailyflow-a2d83.firebasestorage.app",
+  "messagingSenderId": "956368538113",
+  "measurementId": "G-HWKB09ME6M"
 }

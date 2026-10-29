@@ -33,11 +33,15 @@ import { GoalsView } from './components/goals/GoalsView';
 import { InsightsView } from './components/insights/InsightsView';
 import { SettingsView } from './components/settings/SettingsView';
 import { FocusSessionModal } from './components/focus/FocusSessionModal';
+import { DailyFlowCover } from './components/landing/DailyFlowCover';
 import { PAGE_BACKGROUNDS } from './utils/pageBackgrounds';
 
 function DayFlowApp() {
   const { showToast } = useToast();
   const { currentUser, userProfile, openAuthModal } = useAuth();
+
+  // Cover Page vs Workspace toggle (Cover page appears before existing dashboard)
+  const [showCoverPage, setShowCoverPage] = useState<boolean>(true);
 
   // Primary State
   const [currentSection, setCurrentSection] = useState<NavSection>('today');
@@ -458,6 +462,21 @@ function DayFlowApp() {
   const isDark = settings.theme === 'dark';
   const configuredOpacity = settings.bgImageOpacity ?? 0.12;
 
+  // 1. Initial Liquid Glass Cover Page Experience (over Background Video)
+  if (showCoverPage) {
+    return (
+      <div className="min-h-screen bg-[#0E1015]">
+        <DailyFlowCover onEnterWorkspace={() => setShowCoverPage(false)} />
+        <AuthModal />
+        <UserProfileModal
+          isOpen={showProfileModal}
+          onClose={() => setShowProfileModal(false)}
+        />
+      </div>
+    );
+  }
+
+  // 2. Personal Productivity Workspace Cockpit
   return (
     <div className="flex min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)]">
       {/* Desktop Sidebar */}
@@ -469,6 +488,7 @@ function DayFlowApp() {
         activeGoalsCount={activeGoalsCount}
         settings={settings}
         onOpenProfileModal={() => setShowProfileModal(true)}
+        onOpenCoverPage={() => setShowCoverPage(true)}
       />
 
       {/* Main View Area */}
@@ -504,6 +524,7 @@ function DayFlowApp() {
           }}
           onOpenFocusModal={() => setShowFocusModal(true)}
           onOpenProfileModal={() => setShowProfileModal(true)}
+          onOpenCoverPage={() => setShowCoverPage(true)}
           activeFocusSession={isFocusTimerActive ? activeFocusSessionData : null}
           focusSecondsRemaining={focusSecondsRemaining}
         />

@@ -23,6 +23,7 @@ interface HeaderProps {
   onOpenQuickAdd: () => void;
   onOpenFocusModal: () => void;
   onOpenProfileModal: () => void;
+  onOpenCoverPage?: () => void;
   activeFocusSession: FocusSession | null;
   focusSecondsRemaining: number | null;
   unreadCount?: number;
@@ -35,6 +36,7 @@ export function Header({
   onOpenQuickAdd,
   onOpenFocusModal,
   onOpenProfileModal,
+  onOpenCoverPage,
   activeFocusSession,
   focusSecondsRemaining,
 }: HeaderProps) {
@@ -196,6 +198,18 @@ export function Header({
             </div>
           )}
         </div>
+
+        {/* Cover Page Link */}
+        {onOpenCoverPage && (
+          <button
+            onClick={onOpenCoverPage}
+            className="flex items-center gap-1.5 px-2.5 py-2 rounded-lg border border-[#E2E8F0] dark:border-[#2b313d] bg-white dark:bg-[#171a22] hover:bg-zinc-50 dark:hover:bg-[#202531] text-zinc-600 dark:text-zinc-300 hover:text-orange-600 dark:hover:text-orange-400 transition-all cursor-pointer shadow-xs text-xs font-medium"
+            title="View Liquid-Glass DailyFlow AI Cover Page"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-orange-500" />
+            <span className="hidden lg:inline">Cover Page</span>
+          </button>
+        )}
 
         {/* Theme Toggle */}
         <button

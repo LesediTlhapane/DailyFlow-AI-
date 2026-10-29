@@ -43,7 +43,7 @@ export const db: Firestore = firebaseConfigData.firestoreDatabaseId
 // Connection test per skill instructions
 export async function testFirestoreConnection(): Promise<boolean> {
   try {
-    await getDocFromServer(doc(db, 'users', '__healthcheck__'));
+    await getDocFromServer(doc(db, '_healthchecks', 'connection-test'));
     return true;
   } catch (error: any) {
     if (error?.code === 'permission-denied' || error?.code === 'not-found') {

@@ -32,6 +32,7 @@ interface SidebarProps {
   activeGoalsCount: number;
   settings?: UserSettings;
   onOpenProfileModal?: () => void;
+  onOpenCoverPage?: () => void;
 }
 
 export function Sidebar({
@@ -42,6 +43,7 @@ export function Sidebar({
   activeGoalsCount,
   settings,
   onOpenProfileModal,
+  onOpenCoverPage,
 }: SidebarProps) {
   const { currentUser, userProfile, openAuthModal } = useAuth();
   const navItems = [
@@ -100,7 +102,13 @@ export function Sidebar({
   return (
     <aside className="hidden md:flex flex-col w-64 shrink-0 border-r border-[#E2E8F0] dark:border-[#262c37] bg-white/95 dark:bg-[#12151c]/90 backdrop-blur-md min-h-screen transition-colors z-20">
       {/* Brand Header with dayflow.jpg Logo */}
-      <div className="flex items-center gap-3 px-5 py-4 border-b border-[#E2E8F0] dark:border-[#262c37]">
+      <div
+        onClick={onOpenCoverPage}
+        className={`flex items-center gap-3 px-5 py-4 border-b border-[#E2E8F0] dark:border-[#262c37] ${
+          onOpenCoverPage ? 'cursor-pointer hover:bg-zinc-50 dark:hover:bg-[#181c25] transition-colors' : ''
+        }`}
+        title="View DailyFlow AI Cover Page"
+      >
         <div className="relative w-9 h-9 rounded-xl overflow-hidden ring-2 ring-orange-500/40 shadow-sm shrink-0 bg-zinc-100 dark:bg-zinc-900">
           <img
             src={dayflowLogo}
